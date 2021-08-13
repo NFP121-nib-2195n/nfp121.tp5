@@ -63,29 +63,44 @@ public class JPanelListe extends JPanel implements ActionListener, ItemListener 
         add(texte, "Center");
 
         boutonRechercher.addActionListener(this);
-        // à compléter;
+        saisie.addActionListener(this);
+        boutonRetirer.addActionListener(this);
+        boutonOccurrences.addActionListener(this);
 
+        ordreCroissant.addItemListener(this);
+        ordreDecroissant.addItemListener(this);
+        
     }
 
     /** ne pas modifier les affichages, les classes de tests en ont besoin ... */
     public void actionPerformed(ActionEvent ae) {
         try {
             boolean res = false;
+            
             if (ae.getSource() == boutonRechercher || ae.getSource() == saisie) {
+                
                 res = liste.contains(saisie.getText());
                 Integer occur = occurrences.get(saisie.getText());
                 afficheur.setText("résultat de la recherche de : "+ saisie.getText() + " -->  " + res);
-            } else if (ae.getSource() == boutonRetirer) {
+            
+            }
+            
+            else if (ae.getSource() == boutonRetirer) {
+                
                 res = retirerDeLaListeTousLesElementsCommencantPar(saisie
                     .getText());
                 afficheur.setText("résultat du retrait de tous les éléments commençant par -->  "+ saisie.getText() + " : " + res);
+            
             } else if (ae.getSource() == boutonOccurrences) {
+                
                 Integer occur = occurrences.get(saisie.getText());
                 if (occur != null)
                     afficheur.setText(" -->  " + occur + " occurrence(s)");
                 else
                     afficheur.setText(" -->  ??? ");
+            
             }
+            
             texte.setText(liste.toString());
 
         } catch (Exception e) {
@@ -94,19 +109,28 @@ public class JPanelListe extends JPanel implements ActionListener, ItemListener 
     }
 
     public void itemStateChanged(ItemEvent ie) {
-        if (ie.getSource() == ordreCroissant)
-            ;// à compléter
-        else if (ie.getSource() == ordreDecroissant)
-            ;// à compléter
-
+        if (ie.getSource() == ordreCroissant){
+            Collections.sort(liste);
+        }
+        else if (ie.getSource() == ordreDecroissant){
+            Collections.sort(liste, Collections.reverseOrder());
+        }
         texte.setText(liste.toString());
     }
 
     private boolean retirerDeLaListeTousLesElementsCommencantPar(String prefixe) {
         boolean resultat = false;
-        // à compléter
-        // à compléter
-        // à compléter
+
+        Iterator<String> it = this.liste.iterator();
+        while(it.hasNext()){
+            String next = it.next();
+            if(next.startsWith(prefixe)){
+                occurrences.put(next,0);
+                resultat = true;
+                it.remove();
+            }
+        }
+
         return resultat;
     }
 
